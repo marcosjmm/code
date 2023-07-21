@@ -1,4 +1,4 @@
-package com.marcosmelo.br.code.projeto.model;
+package com.marcosmelo.br.code.projeto.model.entity;
 
 import java.util.Date;
 

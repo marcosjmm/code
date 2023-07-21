@@ -1,4 +1,4 @@
-package com.marcosmelo.br.code.projeto.model;
+package com.marcosmelo.br.code.projeto.model.entity;
 
 import java.util.Date;
 
@@ -11,6 +11,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import com.marcosmelo.br.code.projeto.model.enuns.ClassificacaoRisco;
+import com.marcosmelo.br.code.projeto.model.enuns.Status;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -45,13 +48,13 @@ public class Projeto {
 	private String descricao;
 	
 	@Column(name = "status")
-	private String status;
+	private Status status;
 	
 	@Column(name = "orcamento")
 	private Float orcamento;
 	
 	@Column(name = "risco")
-	private String risco;
+	private ClassificacaoRisco risco;
 	
 	@JoinColumn(name = "idgerente", referencedColumnName = "id")
 	@ManyToOne()
