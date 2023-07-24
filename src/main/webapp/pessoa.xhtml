@@ -60,10 +60,11 @@
 					<p:ajax event="rowUnselectCheckbox" update=":form:delete-pessoas-button" />
 					<p:ajax event="toggleSelect" update=":form:delete-pessoas-button" />
 
-					<p:column selectionMode="multiple" exportable="false"></p:column>
+					<p:column selectionMode="multiple" 
+						exportable="false" style="width:20px"/>
 
 					<p:column headerText="ID" sortBy="#{pessoa.id}"
-						filterBy="#{pessoa.id}">
+						filterBy="#{pessoa.id}" style="width:30px">
 						<h:outputText value="#{pessoa.id}" />
 					</p:column>
 					<p:column headerText="Nome" sortBy="#{pessoa.nome}"
@@ -71,18 +72,21 @@
 						<h:outputText value="#{pessoa.nome}" />
 					</p:column>
 					<p:column headerText="Dt. Nasc." sortBy="#{pessoa.dataNascimento}"
-						filterBy="#{pessoa.dataNascimento}">
-						<h:outputText value="#{pessoa.dataNascimento}" />
+						filterBy="#{pessoa.dataNascimento}" style="width:80px">
+						<h:outputText value="#{pessoa.dataNascimento}" >
+							<f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+						</h:outputText>
 					</p:column>
 					<p:column headerText="CPF" sortBy="#{pessoa.cpf}"
-						filterBy="#{pessoa.cpf}">
-						<h:outputText value="#{pessoa.cpf}" />
+						filterBy="#{pessoa.cpf}" style="width:105px">
+						<h:outputText value="#{pessoa.cpf}">
+						</h:outputText>
 					</p:column>
 					<p:column headerText="Funcionário" sortBy="#{pessoa.funcionario}"
-						filterBy="#{pessoa.funcionario}">
+						filterBy="#{pessoa.funcionario}" style="width:120px">
 						<p:selectBooleanCheckbox value="#{pessoa.funcionario}" itemLabel="Funcionário"/>
 					</p:column>
-					<p:column exportable="false">
+					<p:column exportable="false" style="width:70px">
 						<p:commandButton icon="ui-icon-pencil"
 							update=":dialogs:manage-pessoa-content"
 							oncomplete="PF('managePessoaDialog').show()"
@@ -107,27 +111,29 @@
 				<p:dialog header="Detalhes da Pessoa"
 					widgetVar="managePessoaDialog">
 					<p:outputPanel id="manage-pessoa-content" class="ui-fluid">
-						<p:outputPanel rendered="#{not empty pessoaMB.pessoaSelecionada}">
+						<h:panelGrid columns="3" cellpadding="5" style="margin: 0 auto;" 
+							rendered="#{not empty pessoaMB.pessoaSelecionada}">
 							<div class="field">
-								<p:outputLabel for="nome">Nome</p:outputLabel>
+								<p:outputLabel for="nome" value="Nome"/>
 								<p:inputText id="nome" value="#{pessoaMB.pessoaSelecionada.nome}"
-									required="true" />
+									required="true" size="40"/>
 							</div>
 							<div class="field">
 								<p:outputLabel for="dtNasc" value="Data de Nascimento" />
 						        <p:calendar id="dtNasc" value="#{pessoaMB.pessoaSelecionada.dataNascimento}" 
-						        	pattern="dd.MM.yyyy" mask="true">
+						        	pattern="dd.MM.yyyy" mask="true" size="15">
 						            <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
 						        </p:calendar>
 						    </div>
 							<div class="field">
 								<p:outputLabel for="cpf" value="C.P.F."/>
-						        <p:inputText id="cpf" value="#{pessoaMB.pessoaSelecionada.cpf}"/>
+						        <p:inputMask value="#{pessoaMB.pessoaSelecionada.cpf}" id="cpf" 
+						        mask="999.999.999-99" validateMask="true" size="15"/>
 							</div>
 							<div class="field">
 								<p:selectBooleanCheckbox value="#{pessoaMB.pessoaSelecionada.funcionario}" itemLabel="Funcionário"/>
 							</div>
-						</p:outputPanel>
+						</h:panelGrid>
 					</p:outputPanel>
 
 					<f:facet name="footer">

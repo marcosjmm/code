@@ -34,7 +34,7 @@ public class ProjetoRepositoryTest {
 		Pessoa gerente = pessoaRepository.save(new Pessoa(1L, "Nome", new Date(), "11122233344", true));
 				
 		Projeto projeto = projetoRepository.save(new Projeto(1l, "ProjetoTeste", new Date(), new Date(), new Date(), "Projeto inserido para teste",
-				Status.EM_ANALISE, 100.0F, ClassificacaoRisco.ALTO_RISCO, gerente));
+				Status.EM_ANALISE, 100.0, ClassificacaoRisco.ALTO_RISCO, gerente));
 		
 		Assertions.assertThat(projeto).isNotNull();
 	}

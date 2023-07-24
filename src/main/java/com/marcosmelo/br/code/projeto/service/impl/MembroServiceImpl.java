@@ -43,7 +43,7 @@ public class MembroServiceImpl implements MembroService{
 		
 		if(Objects.nonNull(pessoa)) {
 			
-			if(pessoa.getFuncionario()) {
+			if(Boolean.TRUE.equals(pessoa.getFuncionario())) {
 				
 				if(Objects.nonNull(projeto) && projeto.isPresent()) {				
 					MembroId membroId = new MembroId();

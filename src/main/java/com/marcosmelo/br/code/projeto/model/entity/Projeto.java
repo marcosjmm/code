@@ -49,7 +49,7 @@ public class Projeto {
 	private Status status;
 	
 	@Column(name = "orcamento")
-	private Float orcamento;
+	private Double orcamento;
 	
 	@Column(name = "risco")
 	private ClassificacaoRisco risco;

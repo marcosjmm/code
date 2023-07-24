@@ -60,10 +60,10 @@
 					<p:ajax event="rowUnselectCheckbox" update=":form:delete-projetos-button" />
 					<p:ajax event="toggleSelect" update=":form:delete-projetos-button" />
 
-					<p:column selectionMode="multiple" exportable="false"></p:column>
+					<p:column selectionMode="multiple" exportable="false" style="width:20px"></p:column>
 
 					<p:column headerText="ID" sortBy="#{proejto.id}"
-						filterBy="#{projeto.id}">
+						style="width:30px" filterBy="#{projeto.id}">
 						<h:outputText value="#{projeto.id}" />
 					</p:column>
 					<p:column headerText="Nome" sortBy="#{projeto.nome}"
@@ -71,38 +71,46 @@
 						<h:outputText value="#{projeto.nome}" />
 					</p:column>
 					<p:column headerText="Início" sortBy="#{projeto.dataInicio}"
-						filterBy="#{projeto.dataInicio}">
-						<h:outputText value="#{projeto.dataInicio}" />
+						filterBy="#{projeto.dataInicio}" style="width: 75px">
+						<h:outputText value="#{projeto.dataInicio}">
+							<f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+						</h:outputText>
 					</p:column>
 					<p:column headerText="Prev." sortBy="#{projeto.dataPrevisaoFim}"
-						filterBy="#{projeto.dataPrevisaoFim}">
-						<h:outputText value="#{projeto.dataPrevisaoFim}" />
+						filterBy="#{projeto.dataPrevisaoFim}" style="width: 75px">
+						<h:outputText value="#{projeto.dataPrevisaoFim}">
+							<f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+						</h:outputText>
 					</p:column>
 					<p:column headerText="Fim" sortBy="#{projeto.dataFim}"
-						filterBy="#{projeto.dataFim}">
-						<h:outputText value="#{projeto.dataFim}" />
+						filterBy="#{projeto.dataFim}" style="width: 75px">
+						<h:outputText value="#{projeto.dataFim}">
+							<f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Sao_Paulo"/>
+						</h:outputText>
 					</p:column>
 					<p:column headerText="Desc." sortBy="#{projeto.descricao}"
 						filterBy="#{projeto.descricao}">
 						<h:outputText value="#{projeto.descricao}" />
 					</p:column>
 					<p:column headerText="Status" sortBy="#{projeto.status.description}"
-						filterBy="#{projeto.status.description}">
+						filterBy="#{projeto.status.description}" style="width: 100px">
 						<h:outputText value="#{projeto.status.description}" />
 					</p:column>
 					<p:column headerText="Orç." sortBy="#{projeto.orcamento}"
-						filterBy="#{projeto.orcamento}">
-						<h:outputText id="orcamento" value="#{projeto.orcamento}" symbol="R$"/>
+						filterBy="#{projeto.orcamento}" style="width: 100px">
+						<h:outputText id="orcamento" value="#{projeto.orcamento}">
+							<f:convertNumber currencySymbol="R$" type="currency"/>
+						</h:outputText>
 					</p:column>
 					<p:column headerText="Risco" sortBy="#{projeto.risco.description}"
-						filterBy="#{projeto.risco.description}">
+						filterBy="#{projeto.risco.description}" style="width: 85px">
 						<h:outputText value="#{projeto.risco.description}" />
 					</p:column>
 					<p:column headerText="Ger." sortBy="#{projeto.gerente.nome}"
 						filterBy="#{projeto.gerente.nome}">
 						<h:outputText value="#{projeto.gerente.nome}" />
 					</p:column>
-					<p:column exportable="false">
+					<p:column exportable="false" style="width:70px">
 						<p:commandButton icon="ui-icon-pencil"
 							update=":dialogs:manage-projeto-content"
 							oncomplete="PF('manageProjetoDialog').show()"
@@ -124,50 +132,53 @@
 			</h:form>
 
 			<h:form id="dialogs">
-				<p:dialog header="Detalhes do Projeto"
+				<p:dialog header="Detalhes do Projeto" width="600"
 					widgetVar="manageProjetoDialog">
 					<p:outputPanel id="manage-projeto-content" class="ui-fluid">
-						<p:outputPanel rendered="#{not empty projetoMB.projetoSelecionado}">
+						<h:panelGrid columns="3" cellpadding="5" style="margin: 0 auto;" 
+							rendered="#{not empty projetoMB.projetoSelecionado}">
 							<div class="field">
 								<p:outputLabel for="nome">Nome</p:outputLabel>
 								<p:inputText id="nome" value="#{projetoMB.projetoSelecionado.nome}"
-									required="true" />
+									required="true" size="40"/>
 							</div>
 							<div class="field">
 								<p:outputLabel for="dtInicio" value="Data de Início" />
 						        <p:calendar id="dtInicio" value="#{projetoMB.projetoSelecionado.dataInicio}" 
-						        	pattern="dd.MM.yyyy" mask="true">
+						        	pattern="dd/MM/yyyy" mask="true" size="15">
 						            <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
 						        </p:calendar>
 						    </div>
 						    <div class="field">
 								<p:outputLabel for="dtPrevFim" value="Data de Previsão do Fim" />
 						        <p:calendar id="dtPrevFim" value="#{projetoMB.projetoSelecionado.dataPrevisaoFim}" 
-						        	pattern="dd.MM.yyyy" mask="true">
+						        	pattern="dd/MM/yyyy" mask="true" size="15">
 						            <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
 						        </p:calendar>
 						    </div>
 						    <div class="field">
 								<p:outputLabel for="dtFim" value="Data Fim" />
 						        <p:calendar id="dtFim" value="#{projetoMB.projetoSelecionado.dataFim}" 
-						        	pattern="dd.MM.yyyy" mask="true">
+						        	pattern="dd/MM/yyyy" mask="true" size="15">
 						            <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
 						        </p:calendar>
 						    </div>
 							<div class="field">
 								<p:outputLabel for="descricao" value="Descrição"/>
-						        <p:inputText id="descricao" value="#{projetoMB.projetoSelecionado.descricao}"/>
+						        <p:inputText id="descricao" value="#{projetoMB.projetoSelecionado.descricao}" size="40"/>
 							</div>
 							<div class="field">
 								<p:outputLabel for="status" value="Status"/>
-						        <h:selectOneMenu id="status" value="#{projetoMB.projetoSelecionado.status}" required="true" label="Status">
+						        <h:selectOneMenu id="status" value="#{projetoMB.projetoSelecionado.status}" 
+						        	required="true" label="Status">
 				                    <f:selectItem itemLabel="Selecione o Status" itemValue="" noSelectionOption="true"/>
 				                    <f:selectItems value="#{projetoMB.statusProjeto}" var="prj" itemLabel="#{prj.description}" itemValue="#{prj}"></f:selectItems>
 				                </h:selectOneMenu>
 							</div>
 							<div class="field">
 								<p:outputLabel value="Orçamento"/>
-						        <p:inputNumber id="orcamento" value="#{projetoMB.projetoSelecionado.orcamento}" symbol="R$">
+						        <p:inputNumber id="orcamento" value="#{projetoMB.projetoSelecionado.orcamento}" symbol="R$"
+						        	decimalSeparator="," thousandSeparator="." size="15">
 				        		</p:inputNumber>
 							</div>
 							<div class="field">
@@ -185,9 +196,8 @@
 				                    <f:selectItems value="#{projetoMB.listPessoasGerente}" var="ger" 
 				                    	itemLabel="#{ger.id} - #{ger.nome}" itemValue="#{ger.id}"></f:selectItems>
 				                </h:selectOneMenu>
-							</div>
-							
-						</p:outputPanel>
+							</div>							
+						</h:panelGrid>
 					</p:outputPanel>
 
 					<f:facet name="footer">
