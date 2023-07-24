@@ -68,7 +68,7 @@ public class MembroServiceImpl implements MembroService{
 		}else {
 			throw new ProjetoException("Não foi encontrada nenhuma pessoa com as informações passadas "
 					+ "para ser cadastrada como membro.");
-		}
+		}		
 		
 	}
 

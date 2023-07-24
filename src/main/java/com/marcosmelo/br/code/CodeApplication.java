@@ -23,7 +23,7 @@ public class CodeApplication {
     public ServletRegistrationBean facesServletRegistration() {
         ServletRegistrationBean registration = new ServletRegistrationBean<>(new FacesServlet(), "*.xhtml");
         registration.setLoadOnStartup(1);
-        registration.addUrlMappings("*.jr");
+        registration.addUrlMappings("*.jsf");
         return registration;
     }
 

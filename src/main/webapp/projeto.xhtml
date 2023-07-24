@@ -1,0 +1,226 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="corpo">
+
+		<div class="card crud-demo">
+			<h:form id="form">
+				<p:growl id="messages" showDetail="true" />
+
+				<p:toolbar>
+					<p:toolbarGroup>
+						<p:commandButton value="Cadastrar" icon="ui-icon-plus"
+							actionListener="#{projetoMB.openNew}"
+							update=":dialogs:manage-projeto-content"
+							oncomplete="PF('manageProjetoDialog').show()"
+							styleClass="ui-button-success" style="margin-right: .5rem">
+							<p:resetInput target=":dialogs:manage-projeto-content" />
+						</p:commandButton>
+						<p:commandButton id="delete-projetos-button" icon="ui-icon-trash"
+							value="#{projetoMB.mensagemBotaoExcluir}"
+							actionListener="#{projetoMB.excluirProjetosSelecionados}"
+							styleClass="ui-button-danger"
+							update="@this">
+							<p:confirm header="Confirmação"
+								message="Excluir a(s) projeto(s) selecionado(s)?"
+								icon="pi pi-exclamation-triangle" />
+						</p:commandButton>
+					</p:toolbarGroup>
+					<p:toolbarGroup align="right">
+						<p:commandButton value="Export" icon="ui-icon-extlink"
+							styleClass="ui-button-help" ajax="false">
+							<p:dataExporter type="pdf" target="dt-projetos"
+								fileName="projetos" />
+						</p:commandButton>
+					</p:toolbarGroup>
+				</p:toolbar>
+
+				<p:dataTable id="dt-projetos" widgetVar="dtProjetos" var="projeto"
+					value="#{projetoMB.listProjetos}" reflow="true"
+					styleClass="projetos-table"
+					selection="#{projetoMB.listProjetosSelecionados}" rowKey="#{projeto.id}"
+					paginator="true" rows="10" rowSelectMode="add"
+					paginatorPosition="bottom">
+					<f:facet name="header">
+						<div class="projetos-table-header">
+							<span style="font-weight: bold">PROJETOS</span> <span
+								class="filter-container ui-input-icon-left"> <i
+								class="pi pi-search"></i> <p:inputText id="globalFilter"
+									onkeyup="PF('dtProjetos').filter()" placeholder="Search" />
+							</span>
+						</div>
+					</f:facet>
+
+					<p:ajax event="rowSelect" update=":form:delete-projetos-button" />
+					<p:ajax event="rowUnselect" update=":form:delete-projetos-button" />
+					<p:ajax event="rowSelectCheckbox" update=":form:delete-projetos-button" />
+					<p:ajax event="rowUnselectCheckbox" update=":form:delete-projetos-button" />
+					<p:ajax event="toggleSelect" update=":form:delete-projetos-button" />
+
+					<p:column selectionMode="multiple" exportable="false"></p:column>
+
+					<p:column headerText="ID" sortBy="#{proejto.id}"
+						filterBy="#{projeto.id}">
+						<h:outputText value="#{projeto.id}" />
+					</p:column>
+					<p:column headerText="Nome" sortBy="#{projeto.nome}"
+						filterBy="#{projeto.nome}">
+						<h:outputText value="#{projeto.nome}" />
+					</p:column>
+					<p:column headerText="Início" sortBy="#{projeto.dataInicio}"
+						filterBy="#{projeto.dataInicio}">
+						<h:outputText value="#{projeto.dataInicio}" />
+					</p:column>
+					<p:column headerText="Prev." sortBy="#{projeto.dataPrevisaoFim}"
+						filterBy="#{projeto.dataPrevisaoFim}">
+						<h:outputText value="#{projeto.dataPrevisaoFim}" />
+					</p:column>
+					<p:column headerText="Fim" sortBy="#{projeto.dataFim}"
+						filterBy="#{projeto.dataFim}">
+						<h:outputText value="#{projeto.dataFim}" />
+					</p:column>
+					<p:column headerText="Desc." sortBy="#{projeto.descricao}"
+						filterBy="#{projeto.descricao}">
+						<h:outputText value="#{projeto.descricao}" />
+					</p:column>
+					<p:column headerText="Status" sortBy="#{projeto.status.description}"
+						filterBy="#{projeto.status.description}">
+						<h:outputText value="#{projeto.status.description}" />
+					</p:column>
+					<p:column headerText="Orç." sortBy="#{projeto.orcamento}"
+						filterBy="#{projeto.orcamento}">
+						<h:outputText id="orcamento" value="#{projeto.orcamento}" symbol="R$"/>
+					</p:column>
+					<p:column headerText="Risco" sortBy="#{projeto.risco.description}"
+						filterBy="#{projeto.risco.description}">
+						<h:outputText value="#{projeto.risco.description}" />
+					</p:column>
+					<p:column headerText="Ger." sortBy="#{projeto.gerente.nome}"
+						filterBy="#{projeto.gerente.nome}">
+						<h:outputText value="#{projeto.gerente.nome}" />
+					</p:column>
+					<p:column exportable="false">
+						<p:commandButton icon="ui-icon-pencil"
+							update=":dialogs:manage-projeto-content"
+							oncomplete="PF('manageProjetoDialog').show()"
+							styleClass="edit-button rounded-button ui-button-success"
+							process="@this">
+							<f:setPropertyActionListener value="#{projeto}"
+								target="#{projetoMB.projetoSelecionado}" />
+							<p:resetInput target=":dialogs:manage-projeto-content" />
+						</p:commandButton>
+						<p:commandButton class="ui-button-warning rounded-button"
+							process="@this" icon="ui-icon-trash"
+							oncomplete="PF('deleteProjetoDialog').show()">
+							<f:setPropertyActionListener value="#{projeto}"
+								target="#{projetoMB.projetoSelecionado}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+
+			<h:form id="dialogs">
+				<p:dialog header="Detalhes do Projeto"
+					widgetVar="manageProjetoDialog">
+					<p:outputPanel id="manage-projeto-content" class="ui-fluid">
+						<p:outputPanel rendered="#{not empty projetoMB.projetoSelecionado}">
+							<div class="field">
+								<p:outputLabel for="nome">Nome</p:outputLabel>
+								<p:inputText id="nome" value="#{projetoMB.projetoSelecionado.nome}"
+									required="true" />
+							</div>
+							<div class="field">
+								<p:outputLabel for="dtInicio" value="Data de Início" />
+						        <p:calendar id="dtInicio" value="#{projetoMB.projetoSelecionado.dataInicio}" 
+						        	pattern="dd.MM.yyyy" mask="true">
+						            <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
+						        </p:calendar>
+						    </div>
+						    <div class="field">
+								<p:outputLabel for="dtPrevFim" value="Data de Previsão do Fim" />
+						        <p:calendar id="dtPrevFim" value="#{projetoMB.projetoSelecionado.dataPrevisaoFim}" 
+						        	pattern="dd.MM.yyyy" mask="true">
+						            <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
+						        </p:calendar>
+						    </div>
+						    <div class="field">
+								<p:outputLabel for="dtFim" value="Data Fim" />
+						        <p:calendar id="dtFim" value="#{projetoMB.projetoSelecionado.dataFim}" 
+						        	pattern="dd.MM.yyyy" mask="true">
+						            <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
+						        </p:calendar>
+						    </div>
+							<div class="field">
+								<p:outputLabel for="descricao" value="Descrição"/>
+						        <p:inputText id="descricao" value="#{projetoMB.projetoSelecionado.descricao}"/>
+							</div>
+							<div class="field">
+								<p:outputLabel for="status" value="Status"/>
+						        <h:selectOneMenu id="status" value="#{projetoMB.projetoSelecionado.status}" required="true" label="Status">
+				                    <f:selectItem itemLabel="Selecione o Status" itemValue="" noSelectionOption="true"/>
+				                    <f:selectItems value="#{projetoMB.statusProjeto}" var="prj" itemLabel="#{prj.description}" itemValue="#{prj}"></f:selectItems>
+				                </h:selectOneMenu>
+							</div>
+							<div class="field">
+								<p:outputLabel value="Orçamento"/>
+						        <p:inputNumber id="orcamento" value="#{projetoMB.projetoSelecionado.orcamento}" symbol="R$">
+				        		</p:inputNumber>
+							</div>
+							<div class="field">
+								<p:outputLabel for="risco" value="Risco"/>
+						        <h:selectOneMenu id="risco" value="#{projetoMB.projetoSelecionado.risco}" required="true" label="Risco">
+				                    <f:selectItem itemLabel="Selecione o Risco" itemValue="" noSelectionOption="true"/>
+				                    <f:selectItems value="#{projetoMB.clasRisco}" var="rsc" itemLabel="#{rsc.description}" itemValue="#{rsc}"></f:selectItems>
+				                </h:selectOneMenu>
+							</div>
+							
+							<div class="field">
+								<p:outputLabel for="gerente" value="Gerente"/>
+						        <h:selectOneMenu id="gerente" value="#{projetoMB.projetoSelecionado.gerente.id}" required="true" label="Gerente">
+				                    <f:selectItem itemLabel="Selecione o Gerente" itemValue="" noSelectionOption="true"/>
+				                    <f:selectItems value="#{projetoMB.listPessoasGerente}" var="ger" 
+				                    	itemLabel="#{ger.id} - #{ger.nome}" itemValue="#{ger.id}"></f:selectItems>
+				                </h:selectOneMenu>
+							</div>
+							
+						</p:outputPanel>
+					</p:outputPanel>
+
+					<f:facet name="footer">
+						<p:commandButton value="Salvar" icon="ui-icon-circle-plus"
+							actionListener="#{projetoMB.incluirProjeto}"
+							update="manage-projeto-content"
+							process="manage-projeto-content @this" />
+						<p:commandButton value="Cancelar" icon="ui-icon-circle-close"
+							onclick="PF('manageProjetoDialog').hide()"
+							class="ui-button-secondary" type="button" />
+					</f:facet>
+				</p:dialog>
+
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+					responsive="true" width="350" message="Excluir o projeto?"
+					widgetVar="deleteProjetoDialog">
+					<p:commandButton value="Sim" 
+						actionListener="#{projetoMB.excluirProjeto}" process="@this"
+						update=":form:delete-projetos-button"
+						oncomplete="PF('deleteProjetoDialog').hide()" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-button-secondary" 
+						onclick="PF('deleteProjetoDialog').hide()" />
+				</p:confirmDialog>
+
+				<p:confirmDialog global="true" width="300">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no ui-button-secondary" />
+				</p:confirmDialog>
+			</h:form>
+		</div>
+
+	</ui:define>
+</ui:composition>

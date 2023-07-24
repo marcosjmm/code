@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -22,9 +21,7 @@ import lombok.NoArgsConstructor;
 public class Pessoa {
 
 	@Id
-	@Column(name = "id")
-	@SequenceGenerator(name="pessoa_id_generator", sequenceName="pessoa_id")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="pessoa_id_generator")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@Column(name = "nome")

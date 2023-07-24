@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.marcosmelo.br.code.projeto.model.enuns.ClassificacaoRisco;
@@ -28,8 +27,7 @@ public class Projeto {
 	
 	@Id
 	@Column(name = "id")
-	@SequenceGenerator(name="projeto_id_generator", sequenceName="projeto_id")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="projeto_id_generator")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@Column(name = "nome")
@@ -58,6 +56,6 @@ public class Projeto {
 	
 	@JoinColumn(name = "idgerente", referencedColumnName = "id")
 	@ManyToOne()
-	private Pessoa gerente;
+	private Pessoa gerente = new Pessoa();
 
 }

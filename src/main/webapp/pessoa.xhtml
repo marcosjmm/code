@@ -1,0 +1,166 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="corpo">
+
+		<div class="card crud-demo">
+			<h:form id="form">
+				<p:growl id="messages" showDetail="true" />
+
+				<p:toolbar>
+					<p:toolbarGroup>
+						<p:commandButton value="Cadastrar" icon="ui-icon-plus"
+							actionListener="#{pessoaMB.openNew}"
+							update=":dialogs:manage-pessoa-content"
+							oncomplete="PF('managePessoaDialog').show()"
+							styleClass="ui-button-success" style="margin-right: .5rem">
+							<p:resetInput target=":dialogs:manage-pessoa-content" />
+						</p:commandButton>
+						<p:commandButton id="delete-pessoas-button" icon="ui-icon-trash"
+							value="#{pessoaMB.mensagemBotaoExcluir}"
+							actionListener="#{pessoaMB.excluirPessoasSelecionadas}"
+							styleClass="ui-button-danger"
+							update="@this">
+							<p:confirm header="Confirmação"
+								message="Excluir a(s) pessoa(s) selecionada()?"
+								icon="pi pi-exclamation-triangle" />
+						</p:commandButton>
+					</p:toolbarGroup>
+					<p:toolbarGroup align="right">
+						<p:commandButton value="Export" icon="ui-icon-extlink"
+							styleClass="ui-button-help" ajax="false">
+							<p:dataExporter type="pdf" target="dt-pessoas"
+								fileName="pessoas" />
+						</p:commandButton>
+					</p:toolbarGroup>
+				</p:toolbar>
+
+				<p:dataTable id="dt-pessoas" widgetVar="dtPessoas" var="pessoa"
+					value="#{pessoaMB.listPessoas}" reflow="true"
+					styleClass="pessoas-table"
+					selection="#{pessoaMB.listPessoasSelecionadas}" rowKey="#{pessoa.id}"
+					paginator="true" rows="10" rowSelectMode="add"
+					paginatorPosition="bottom">
+					<f:facet name="header">
+						<div class="pessoas-table-header">
+							<span style="font-weight: bold">PESSOAS</span> <span
+								class="filter-container ui-input-icon-left"> <i
+								class="pi pi-search"></i> <p:inputText id="globalFilter"
+									onkeyup="PF('dtPessoas').filter()" placeholder="Search" />
+							</span>
+						</div>
+					</f:facet>
+
+					<p:ajax event="rowSelect" update=":form:delete-pessoas-button" />
+					<p:ajax event="rowUnselect" update=":form:delete-pessoas-button" />
+					<p:ajax event="rowSelectCheckbox" update=":form:delete-pessoas-button" />
+					<p:ajax event="rowUnselectCheckbox" update=":form:delete-pessoas-button" />
+					<p:ajax event="toggleSelect" update=":form:delete-pessoas-button" />
+
+					<p:column selectionMode="multiple" exportable="false"></p:column>
+
+					<p:column headerText="ID" sortBy="#{pessoa.id}"
+						filterBy="#{pessoa.id}">
+						<h:outputText value="#{pessoa.id}" />
+					</p:column>
+					<p:column headerText="Nome" sortBy="#{pessoa.nome}"
+						filterBy="#{pessoa.nome}">
+						<h:outputText value="#{pessoa.nome}" />
+					</p:column>
+					<p:column headerText="Dt. Nasc." sortBy="#{pessoa.dataNascimento}"
+						filterBy="#{pessoa.dataNascimento}">
+						<h:outputText value="#{pessoa.dataNascimento}" />
+					</p:column>
+					<p:column headerText="CPF" sortBy="#{pessoa.cpf}"
+						filterBy="#{pessoa.cpf}">
+						<h:outputText value="#{pessoa.cpf}" />
+					</p:column>
+					<p:column headerText="Funcionário" sortBy="#{pessoa.funcionario}"
+						filterBy="#{pessoa.funcionario}">
+						<p:selectBooleanCheckbox value="#{pessoa.funcionario}" itemLabel="Funcionário"/>
+					</p:column>
+					<p:column exportable="false">
+						<p:commandButton icon="ui-icon-pencil"
+							update=":dialogs:manage-pessoa-content"
+							oncomplete="PF('managePessoaDialog').show()"
+							styleClass="edit-button rounded-button ui-button-success"
+							process="@this">
+							<f:setPropertyActionListener value="#{pessoa}"
+								target="#{pessoaMB.pessoaSelecionada}" />
+							<p:resetInput target=":dialogs:manage-pessoa-content" />
+						</p:commandButton>
+						<p:commandButton class="ui-button-warning rounded-button"
+							process="@this" icon="ui-icon-trash"
+							oncomplete="PF('deletePessoaDialog').show()">
+							<f:setPropertyActionListener value="#{pessoa}"
+								target="#{pessoaMB.pessoaSelecionada}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+
+			<h:form id="dialogs">
+				<p:dialog header="Detalhes da Pessoa"
+					widgetVar="managePessoaDialog">
+					<p:outputPanel id="manage-pessoa-content" class="ui-fluid">
+						<p:outputPanel rendered="#{not empty pessoaMB.pessoaSelecionada}">
+							<div class="field">
+								<p:outputLabel for="nome">Nome</p:outputLabel>
+								<p:inputText id="nome" value="#{pessoaMB.pessoaSelecionada.nome}"
+									required="true" />
+							</div>
+							<div class="field">
+								<p:outputLabel for="dtNasc" value="Data de Nascimento" />
+						        <p:calendar id="dtNasc" value="#{pessoaMB.pessoaSelecionada.dataNascimento}" 
+						        	pattern="dd.MM.yyyy" mask="true">
+						            <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
+						        </p:calendar>
+						    </div>
+							<div class="field">
+								<p:outputLabel for="cpf" value="C.P.F."/>
+						        <p:inputText id="cpf" value="#{pessoaMB.pessoaSelecionada.cpf}"/>
+							</div>
+							<div class="field">
+								<p:selectBooleanCheckbox value="#{pessoaMB.pessoaSelecionada.funcionario}" itemLabel="Funcionário"/>
+							</div>
+						</p:outputPanel>
+					</p:outputPanel>
+
+					<f:facet name="footer">
+						<p:commandButton value="Salvar" icon="ui-icon-circle-plus"
+							actionListener="#{pessoaMB.incluirPessoa}"
+							update="manage-pessoa-content"
+							process="manage-pessoa-content @this" />
+						<p:commandButton value="Cancelar" icon="ui-icon-circle-close"
+							onclick="PF('managePessoaDialog').hide()"
+							class="ui-button-secondary" type="button" />
+					</f:facet>
+				</p:dialog>
+
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+					responsive="true" width="350" message="Excluir a pessoa?"
+					widgetVar="deletePessoaDialog">
+					<p:commandButton value="Sim" 
+						actionListener="#{pessoaMB.excluirPessoa}" process="@this"
+						update=":form:delete-pessoas-button"
+						oncomplete="PF('deletePessoaDialog').hide()" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-button-secondary" 
+						onclick="PF('deletePessoaDialog').hide()" />
+				</p:confirmDialog>
+
+				<p:confirmDialog global="true" width="300">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no ui-button-secondary" />
+				</p:confirmDialog>
+			</h:form>
+		</div>
+
+	</ui:define>
+</ui:composition>
